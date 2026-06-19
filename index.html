@@ -6,232 +6,98 @@
   <title>JARVIS – Voice Assistant</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap');
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --gold: #D4A017;
-      --gold-dim: #8B6914;
-      --bg: #050505;
-      --surface: #0D0D0D;
-      --border: #1a1a1a;
-      --text: #E8E8E8;
-      --muted: #555;
-      --red: #ff4444;
+      --gold: #D4A017; --gold-dim: #8B6914; --bg: #050505;
+      --surface: #0D0D0D; --border: #1a1a1a; --text: #E8E8E8;
+      --muted: #555; --red: #ff4444; --blue: #4fc3f7;
     }
-
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      overflow: hidden;
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', sans-serif; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 24px;
     }
-
-    /* ambient glow */
     body::before {
-      content: '';
-      position: fixed;
-      top: -200px; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 600px;
+      content: ''; position: fixed; top: -200px; left: 50%;
+      transform: translateX(-50%); width: 600px; height: 600px;
       background: radial-gradient(circle, rgba(212,160,23,0.07) 0%, transparent 70%);
       pointer-events: none;
     }
-
-    .container {
-      width: 100%;
-      max-width: 680px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 36px;
-    }
-
-    /* Header */
+    .container { width: 100%; max-width: 700px; display: flex; flex-direction: column; align-items: center; gap: 28px; }
     .header { text-align: center; }
-    .logo {
-      font-family: 'Orbitron', monospace;
-      font-size: clamp(2.4rem, 8vw, 4rem);
-      font-weight: 900;
-      letter-spacing: 0.2em;
-      color: var(--gold);
-      text-shadow: 0 0 40px rgba(212,160,23,0.4);
-    }
-    .tagline {
-      font-size: 0.78rem;
-      letter-spacing: 0.3em;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-top: 6px;
-    }
+    .logo { font-family: 'Orbitron', monospace; font-size: clamp(2.4rem, 8vw, 4rem); font-weight: 900; letter-spacing: 0.2em; color: var(--gold); text-shadow: 0 0 40px rgba(212,160,23,0.4); }
+    .tagline { font-size: 0.78rem; letter-spacing: 0.3em; color: var(--muted); text-transform: uppercase; margin-top: 6px; }
 
-    /* Orb */
-    .orb-wrap {
-      position: relative;
-      width: 180px; height: 180px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .orb-ring {
-      position: absolute;
-      border-radius: 50%;
-      border: 1px solid rgba(212,160,23,0.2);
-    }
+    .orb-wrap { position: relative; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; }
+    .orb-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(212,160,23,0.2); }
     .orb-ring:nth-child(1) { width: 180px; height: 180px; }
     .orb-ring:nth-child(2) { width: 140px; height: 140px; border-color: rgba(212,160,23,0.12); }
-
     .orb {
-      width: 100px; height: 100px;
-      border-radius: 50%;
+      width: 100px; height: 100px; border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, #2a1f00, #0a0800);
       border: 2px solid var(--gold-dim);
       box-shadow: 0 0 30px rgba(212,160,23,0.15), inset 0 0 20px rgba(0,0,0,0.8);
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.3s ease;
-      position: relative;
-      z-index: 1;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease; position: relative; z-index: 1;
     }
     .orb:hover { box-shadow: 0 0 50px rgba(212,160,23,0.35), inset 0 0 20px rgba(0,0,0,0.8); }
-    .orb.listening {
-      border-color: var(--gold);
-      box-shadow: 0 0 60px rgba(212,160,23,0.6), inset 0 0 20px rgba(0,0,0,0.6);
-      animation: pulse 1.4s ease-in-out infinite;
-    }
-    .orb.speaking {
-      border-color: #4fc3f7;
-      box-shadow: 0 0 60px rgba(79,195,247,0.4), inset 0 0 20px rgba(0,0,0,0.6);
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.06); }
-    }
-
+    .orb.listening { border-color: var(--gold); box-shadow: 0 0 60px rgba(212,160,23,0.6), inset 0 0 20px rgba(0,0,0,0.6); animation: pulse 1.4s ease-in-out infinite; }
+    .orb.speaking { border-color: var(--blue); box-shadow: 0 0 60px rgba(79,195,247,0.4), inset 0 0 20px rgba(0,0,0,0.6); }
+    .orb.off { opacity: 0.5; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
     .mic-icon { font-size: 2rem; user-select: none; }
 
-    /* Status */
-    .status {
-      font-family: 'Orbitron', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      color: var(--muted);
-      text-transform: uppercase;
-      height: 18px;
-      transition: color 0.3s;
-    }
+    .status { font-family: 'Orbitron', monospace; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; height: 18px; transition: color 0.3s; }
     .status.active { color: var(--gold); }
-    .status.speaking { color: #4fc3f7; }
+    .status.speaking { color: var(--blue); }
     .status.error { color: var(--red); }
+    .status.success { color: #4caf50; }
 
-    /* Chat log */
     .chat-log {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      min-height: 220px;
-      max-height: 300px;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; min-height: 200px; max-height: 280px;
+      overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+      scrollbar-width: thin; scrollbar-color: var(--border) transparent;
     }
-    .chat-log:empty::after {
-      content: 'Say something to begin...';
-      color: var(--muted);
-      font-size: 0.85rem;
-      font-style: italic;
-      align-self: center;
-      margin: auto;
-    }
-
-    .msg {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      max-width: 85%;
-    }
+    .chat-log:empty::after { content: 'Click the orb and say a command...'; color: var(--muted); font-size: 0.85rem; font-style: italic; align-self: center; margin: auto; }
+    .msg { display: flex; flex-direction: column; gap: 3px; max-width: 88%; }
     .msg.user { align-self: flex-end; align-items: flex-end; }
     .msg.jarvis { align-self: flex-start; }
-
-    .msg-label {
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      color: var(--muted);
-      text-transform: uppercase;
-      font-family: 'Orbitron', monospace;
-    }
+    .msg-label { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; font-family: 'Orbitron', monospace; }
     .msg.user .msg-label { color: var(--gold-dim); }
+    .msg-bubble { padding: 10px 14px; border-radius: 10px; font-size: 0.88rem; line-height: 1.5; }
+    .msg.user .msg-bubble { background: rgba(212,160,23,0.12); border: 1px solid rgba(212,160,23,0.2); color: #f0d080; }
+    .msg.jarvis .msg-bubble { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text); }
 
-    .msg-bubble {
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      line-height: 1.5;
+    /* Commands panel */
+    .commands-grid {
+      width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px;
     }
-    .msg.user .msg-bubble {
-      background: rgba(212,160,23,0.12);
-      border: 1px solid rgba(212,160,23,0.2);
-      color: #f0d080;
+    .cmd-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; font-size: 0.72rem; color: var(--muted);
+      display: flex; align-items: center; gap: 8px; cursor: default;
+      transition: border-color 0.2s;
     }
-    .msg.jarvis .msg-bubble {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
+    .cmd-card:hover { border-color: var(--gold-dim); color: var(--text); }
+    .cmd-card span { font-size: 1rem; }
 
-    /* Controls */
-    .controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .btn {
-      font-family: 'Orbitron', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 10px 18px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+    .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
+    .btn { font-family: 'Orbitron', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 9px 16px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.2s; }
     .btn:hover { border-color: var(--gold-dim); color: var(--gold); }
     .btn.danger:hover { border-color: var(--red); color: var(--red); }
+    .voice-select { background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: 'Inter', sans-serif; font-size: 0.75rem; padding: 8px 10px; border-radius: 8px; cursor: pointer; outline: none; max-width: 160px; }
 
-    /* Voice selector */
-    .voice-select {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.78rem;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      outline: none;
-    }
-    .voice-select:focus { border-color: var(--gold-dim); }
+    .note { font-size: 0.68rem; color: #2a2a2a; text-align: center; letter-spacing: 0.05em; }
 
-    /* Footer note */
-    .note {
-      font-size: 0.7rem;
-      color: #333;
-      text-align: center;
-      letter-spacing: 0.05em;
-    }
+    /* Notes modal */
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; }
+    .modal-bg.open { display: flex; }
+    .modal { background: #111; border: 1px solid var(--border); border-radius: 14px; padding: 24px; width: 90%; max-width: 500px; }
+    .modal h3 { font-family: 'Orbitron', monospace; color: var(--gold); font-size: 0.9rem; letter-spacing: 0.15em; margin-bottom: 14px; }
+    .modal textarea { width: 100%; min-height: 160px; background: #0a0a0a; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.88rem; padding: 12px; resize: vertical; outline: none; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 12px; justify-content: flex-end; }
   </style>
 </head>
 <body>
@@ -245,22 +111,51 @@
   <div class="orb-wrap">
     <div class="orb-ring"></div>
     <div class="orb-ring"></div>
-    <div class="orb" id="orb" onclick="toggleListen()" title="Click to speak">
+    <div class="orb" id="orb" onclick="toggleListen()" title="Click to activate">
       <span class="mic-icon" id="mic-icon">🎙️</span>
     </div>
   </div>
 
-  <div class="status" id="status">Click the orb to speak</div>
+  <div class="status" id="status">Click the orb to activate</div>
 
   <div class="chat-log" id="chat-log"></div>
+
+  <!-- Quick command hints -->
+  <div class="commands-grid">
+    <div class="cmd-card"><span>🌐</span> Open Google</div>
+    <div class="cmd-card"><span>▶️</span> Open YouTube</div>
+    <div class="cmd-card"><span>📸</span> Open Instagram</div>
+    <div class="cmd-card"><span>💬</span> Open WhatsApp</div>
+    <div class="cmd-card"><span>🔍</span> Search [anything]</div>
+    <div class="cmd-card"><span>🎵</span> Play [song] on YouTube</div>
+    <div class="cmd-card"><span>🧮</span> Calculate [math]</div>
+    <div class="cmd-card"><span>📝</span> Take a note</div>
+    <div class="cmd-card"><span>🕐</span> What's the time</div>
+    <div class="cmd-card"><span>📅</span> What's the date</div>
+    <div class="cmd-card"><span>😂</span> Tell me a joke</div>
+    <div class="cmd-card"><span>🗺️</span> Open Maps</div>
+  </div>
 
   <div class="controls">
     <select class="voice-select" id="voice-select" title="Choose voice"></select>
     <button class="btn" onclick="speakTest()">Test Voice</button>
+    <button class="btn" onclick="openNotes()">📝 Notes</button>
     <button class="btn danger" onclick="clearChat()">Clear</button>
   </div>
 
-  <div class="note">Powered by Web Speech API · Works best in Chrome</div>
+  <div class="note">Works best in Chrome · Click orb once to keep JARVIS always listening</div>
+</div>
+
+<!-- Notes Modal -->
+<div class="modal-bg" id="notes-modal">
+  <div class="modal">
+    <h3>📝 JARVIS Notes</h3>
+    <textarea id="notes-area" placeholder="Your notes will appear here..."></textarea>
+    <div class="modal-actions">
+      <button class="btn" onclick="clearNotes()">Clear</button>
+      <button class="btn" onclick="closeNotes()">Close</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -270,6 +165,8 @@
   let voices = [];
   let isListening = false;
   let isSpeaking = false;
+  let alwaysOn = false;
+  let notes = localStorage.getItem('jarvis-notes') || '';
 
   // ── Voices ─────────────────────────────────────────────────────────────────
   function loadVoices() {
@@ -280,57 +177,51 @@
       const opt = document.createElement('option');
       opt.value = i;
       opt.textContent = `${v.name} (${v.lang})`;
-      if (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('james')) {
-        opt.selected = true;
-      }
+      if (v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('james') || v.name.toLowerCase().includes('male')) opt.selected = true;
       sel.appendChild(opt);
     });
   }
   synth.onvoiceschanged = loadVoices;
   loadVoices();
 
-  // ── Speech Recognition setup ───────────────────────────────────────────────
+  // ── Recognition ────────────────────────────────────────────────────────────
   function setupRecognition() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      setStatus('Speech not supported — use Chrome', 'error');
-      return null;
-    }
+    if (!SR) { setStatus('Speech not supported — use Chrome', 'error'); return null; }
     const r = new SR();
-    r.lang = 'en-US';
-    r.interimResults = false;
-    r.maxAlternatives = 1;
-
-    r.onstart = () => {
-      isListening = true;
-      setOrb('listening');
-      setStatus('Listening...', 'active');
-    };
+    r.lang = 'en-US'; r.interimResults = false; r.maxAlternatives = 1;
+    r.onstart = () => { isListening = true; setOrb('listening'); setStatus('Listening...', 'active'); };
     r.onresult = (e) => {
       const transcript = e.results[0][0].transcript.trim();
       addMessage('user', transcript);
       respond(transcript);
     };
     r.onerror = (e) => {
-      console.error(e.error);
       if (e.error === 'not-allowed') setStatus('Microphone blocked — allow access', 'error');
-      else setStatus('Error: ' + e.error, 'error');
-      resetOrb();
+      else if (e.error !== 'no-speech') setStatus('Error: ' + e.error, 'error');
+      if (e.error !== 'no-speech' && alwaysOn) setTimeout(() => startListening(), 1000);
     };
     r.onend = () => {
       isListening = false;
-      if (!isSpeaking) resetOrb();
+      if (alwaysOn && !isSpeaking) setTimeout(() => startListening(), 300);
+      else if (!isSpeaking) resetOrb();
     };
     return r;
   }
 
-  // ── Toggle listen ──────────────────────────────────────────────────────────
   function toggleListen() {
-    if (isSpeaking) { synth.cancel(); isSpeaking = false; }
-    if (isListening) {
-      recognition.stop();
+    if (alwaysOn) {
+      alwaysOn = false;
+      if (recognition) recognition.stop();
+      resetOrb();
       return;
     }
+    alwaysOn = true;
+    startListening();
+  }
+
+  function startListening() {
+    if (!alwaysOn || isSpeaking) return;
     recognition = setupRecognition();
     if (recognition) recognition.start();
   }
@@ -342,37 +233,220 @@
     const utt = new SpeechSynthesisUtterance(text);
     const idx = document.getElementById('voice-select').value;
     if (voices[idx]) utt.voice = voices[idx];
-    utt.rate = 0.95;
-    utt.pitch = 0.85;
-    utt.volume = 1;
-
+    utt.rate = 0.95; utt.pitch = 0.85; utt.volume = 1;
     utt.onstart = () => { isSpeaking = true; setOrb('speaking'); setStatus('Speaking...', 'speaking'); };
-    utt.onend = () => { isSpeaking = false; resetOrb(); };
-    utt.onerror = () => { isSpeaking = false; resetOrb(); };
+    utt.onend = () => { isSpeaking = false; if (alwaysOn) setTimeout(() => startListening(), 400); else resetOrb(); };
+    utt.onerror = () => { isSpeaking = false; if (alwaysOn) setTimeout(() => startListening(), 400); else resetOrb(); };
     synth.speak(utt);
   }
 
   function speakTest() {
-    speak("Hello, I am Jarvis. Your personal AI voice assistant. How may I assist you today?");
-    addMessage('jarvis', "Hello, I am Jarvis. Your personal AI voice assistant. How may I assist you today?");
+    const msg = "Hello! I am JARVIS. I am online and ready to assist you. Try saying open Google, search something, play music on YouTube, or ask me anything!";
+    addMessage('jarvis', msg); speak(msg);
   }
 
-  // ── Response logic ─────────────────────────────────────────────────────────
+  // ── Main Response ──────────────────────────────────────────────────────────
   async function respond(input) {
-    setStatus('Thinking...', 'active');
-    setOrb('');
+    setStatus('Processing...', 'active');
+    const lower = input.toLowerCase().trim();
 
-    const lower = input.toLowerCase();
+    // ── OPEN WEBSITES ──
+    const sites = {
+      'google': 'https://google.com',
+      'youtube': 'https://youtube.com',
+      'instagram': 'https://instagram.com',
+      'whatsapp': 'https://web.whatsapp.com',
+      'facebook': 'https://facebook.com',
+      'twitter': 'https://twitter.com',
+      'x': 'https://x.com',
+      'linkedin': 'https://linkedin.com',
+      'github': 'https://github.com',
+      'gmail': 'https://gmail.com',
+      'netflix': 'https://netflix.com',
+      'amazon': 'https://amazon.com',
+      'maps': 'https://maps.google.com',
+      'spotify': 'https://open.spotify.com',
+      'reddit': 'https://reddit.com',
+      'wikipedia': 'https://wikipedia.org',
+      'chatgpt': 'https://chat.openai.com',
+      'snapchat': 'https://web.snapchat.com',
+      'pinterest': 'https://pinterest.com',
+      'flipkart': 'https://flipkart.com',
+      'nrcreative': 'https://nrmonish2776.github.io/-nrcreative/',
+    };
 
-    // Local quick answers
-    const local = getLocalResponse(lower);
-    if (local) {
-      addMessage('jarvis', local);
-      speak(local);
+    // open [site]
+    const openMatch = lower.match(/^open (.+)$/);
+    if (openMatch) {
+      const target = openMatch[1].trim();
+      const key = Object.keys(sites).find(k => target.includes(k));
+      if (key) {
+        const reply = `Opening ${key.charAt(0).toUpperCase() + key.slice(1)} for you!`;
+        addMessage('jarvis', reply); speak(reply);
+        setTimeout(() => window.open(sites[key], '_blank'), 1200);
+        return;
+      }
+      // open unknown URL
+      const reply = `Let me try opening ${target} for you.`;
+      addMessage('jarvis', reply); speak(reply);
+      setTimeout(() => window.open('https://' + target.replace(/\s/g,'') + '.com', '_blank'), 1200);
       return;
     }
 
-    // Claude API
+    // ── SEARCH GOOGLE ──
+    const searchMatch = lower.match(/^(?:search|google|look up|find)\s+(?:for\s+)?(.+)$/);
+    if (searchMatch) {
+      const query = searchMatch[1];
+      const reply = `Searching Google for ${query}`;
+      addMessage('jarvis', reply); speak(reply);
+      setTimeout(() => window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank'), 1200);
+      return;
+    }
+
+    // ── PLAY MUSIC ON YOUTUBE ──
+    const playMatch = lower.match(/^(?:play|search|put on)\s+(.+?)(?:\s+on youtube)?$/);
+    if (playMatch && (lower.includes('play') || lower.includes('put on') || lower.includes('on youtube'))) {
+      const song = playMatch[1].replace(' on youtube','').trim();
+      const reply = `Playing ${song} on YouTube!`;
+      addMessage('jarvis', reply); speak(reply);
+      setTimeout(() => window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(song)}`, '_blank'), 1200);
+      return;
+    }
+
+    // ── CALCULATE ──
+    const calcMatch = lower.match(/^(?:calculate|what is|compute|solve|what's)\s+(.+)$/);
+    if (calcMatch) {
+      const expr = calcMatch[1].replace(/x/g,'*').replace(/divided by/g,'/').replace(/plus/g,'+').replace(/minus/g,'-').replace(/times/g,'*');
+      try {
+        const result = Function('"use strict"; return (' + expr + ')')();
+        if (typeof result === 'number' && isFinite(result)) {
+          const reply = `The answer is ${result}`;
+          addMessage('jarvis', reply); speak(reply); return;
+        }
+      } catch(e) {}
+    }
+
+    // ── TAKE A NOTE ──
+    if (lower.includes('take a note') || lower.includes('make a note') || lower.includes('note this') || lower.includes('remember this')) {
+      const noteContent = lower.replace(/take a note|make a note|note this|remember this/g,'').replace(/that/g,'').trim();
+      if (noteContent) {
+        const timestamp = new Date().toLocaleTimeString();
+        notes += `[${timestamp}] ${noteContent}\n`;
+        localStorage.setItem('jarvis-notes', notes);
+        const reply = `Got it! I've noted: ${noteContent}`;
+        addMessage('jarvis', reply); speak(reply);
+      } else {
+        openNotes();
+        const reply = "Opening your notes. You can type directly in there!";
+        addMessage('jarvis', reply); speak(reply);
+      }
+      return;
+    }
+
+    if (lower.includes('show notes') || lower.includes('open notes') || lower.includes('my notes')) {
+      openNotes();
+      const reply = "Here are your notes!";
+      addMessage('jarvis', reply); speak(reply); return;
+    }
+
+    // ── TIME & DATE ──
+    if (/what('s| is) the time|current time|tell me the time/.test(lower) || lower === 'time') {
+      const t = new Date().toLocaleTimeString();
+      const reply = `The current time is ${t}`;
+      addMessage('jarvis', reply); speak(reply); return;
+    }
+    if (/what('s| is) (the )?date|today's date|what day/.test(lower) || lower === 'date') {
+      const d = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      const reply = `Today is ${d}`;
+      addMessage('jarvis', reply); speak(reply); return;
+    }
+
+    // ── JOKES ──
+    const jokes = [
+      "Why do programmers prefer dark mode? Because light attracts bugs!",
+      "Why did the computer catch a cold? Because it left its Windows open!",
+      "How many programmers does it take to change a lightbulb? None — that's a hardware problem!",
+      "Why did the developer go broke? Because he used up all his cache!",
+      "I told my computer I needed a break. Now it won't stop sending me Kit-Kat ads.",
+    ];
+    if (/joke|funny|laugh|humor/.test(lower)) {
+      const reply = jokes[Math.floor(Math.random() * jokes.length)];
+      addMessage('jarvis', reply); speak(reply); return;
+    }
+
+    // ── VOLUME / SYSTEM ──
+    if (/mute|be quiet|stop talking|shut up/.test(lower)) {
+      synth.cancel(); isSpeaking = false;
+      addMessage('jarvis', "Muted! I'll stay quiet."); return;
+    }
+    if (/clear (chat|history)|clean screen/.test(lower)) {
+      clearChat();
+      const reply = "Chat cleared!"; addMessage('jarvis', reply); speak(reply); return;
+    }
+
+    // ── GREETINGS ──
+    if (/^(hi|hello|hey|good morning|good evening|good night|howdy)/.test(lower)) {
+      const hour = new Date().getHours();
+      const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+      const reply = `${greeting}! I'm JARVIS, your personal assistant. How can I help you today?`;
+      addMessage('jarvis', reply); speak(reply); return;
+    }
+
+    // ── WHO ARE YOU ──
+    if (/your name|who are you|what are you/.test(lower)) {
+      const reply = "I'm JARVIS — Just A Rather Very Intelligent System. Your personal AI assistant, always at your service!";
+      addMessage('jarvis', reply); speak(reply); return;
+    }
+
+    // ── THANK YOU ──
+    if (/thank/.test(lower)) {
+      const reply = "You're welcome! Always happy to help. Anything else?";
+      addMessage('jarvis', reply); speak(reply); return;
+    }
+
+    // ── BYE ──
+    if (/bye|goodbye|see you|good night|take care/.test(lower)) {
+      const reply = "Goodbye! Have a wonderful day. I'll be here whenever you need me!";
+      addMessage('jarvis', reply); speak(reply);
+      setTimeout(() => { alwaysOn = false; resetOrb(); }, 2500); return;
+    }
+
+    // ── WEATHER ──
+    if (/weather|temperature|forecast|rain|sunny/.test(lower)) {
+      const reply = "Let me pull up the weather for you!";
+      addMessage('jarvis', reply); speak(reply);
+      setTimeout(() => window.open('https://www.google.com/search?q=weather+today', '_blank'), 1200);
+      return;
+    }
+
+    // ── NEWS ──
+    if (/news|headlines|what's happening/.test(lower)) {
+      const reply = "Opening the latest news for you!";
+      addMessage('jarvis', reply); speak(reply);
+      setTimeout(() => window.open('https://news.google.com', '_blank'), 1200);
+      return;
+    }
+
+    // ── MAPS / DIRECTIONS ──
+    const mapsMatch = lower.match(/(?:directions to|navigate to|take me to|where is)\s+(.+)/);
+    if (mapsMatch) {
+      const place = mapsMatch[1];
+      const reply = `Getting directions to ${place}!`;
+      addMessage('jarvis', reply); speak(reply);
+      setTimeout(() => window.open(`https://www.google.com/maps/search/${encodeURIComponent(place)}`, '_blank'), 1200);
+      return;
+    }
+
+    // ── SEND WHATSAPP MESSAGE ──
+    const waMatch = lower.match(/(?:send|message|whatsapp)\s+(.+?)\s+(?:saying|that|message)\s+(.+)/);
+    if (waMatch) {
+      const reply = `Opening WhatsApp to message ${waMatch[1]}!`;
+      addMessage('jarvis', reply); speak(reply);
+      setTimeout(() => window.open(`https://web.whatsapp.com`, '_blank'), 1200);
+      return;
+    }
+
+    // ── FALLBACK: Claude AI ──
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
@@ -380,75 +454,50 @@
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
           max_tokens: 1000,
-          system: "You are JARVIS, a helpful and intelligent voice assistant. Keep responses concise (2-3 sentences max) and conversational — this will be spoken aloud. Be friendly, smart, and direct. Never use markdown, bullet points, or special characters.",
+          system: "You are JARVIS, a helpful and intelligent voice assistant. Keep responses concise — 1 to 2 sentences max — since this will be spoken aloud. Be friendly, smart, and direct. Never use markdown, bullet points, emojis, or special characters in your response.",
           messages: [{ role: "user", content: input }]
         })
       });
       const data = await res.json();
       const reply = data?.content?.[0]?.text || "I'm sorry, I couldn't process that.";
-      addMessage('jarvis', reply);
-      speak(reply);
+      addMessage('jarvis', reply); speak(reply);
     } catch (err) {
-      const fallback = "I'm having trouble connecting right now. Please check your internet connection.";
-      addMessage('jarvis', fallback);
-      speak(fallback);
+      const fallback = "I'm having trouble connecting right now. Please check your internet.";
+      addMessage('jarvis', fallback); speak(fallback);
     }
   }
 
-  function getLocalResponse(input) {
-    if (/^(hi|hello|hey|good morning|good evening|howdy)/.test(input))
-      return "Hello! I'm JARVIS, your personal assistant. What can I do for you today?";
-    if (/your name|who are you/.test(input))
-      return "I'm JARVIS — Just A Rather Very Intelligent System. Created to assist you.";
-    if (/time/.test(input) && !/timezone/.test(input))
-      return `The current time is ${new Date().toLocaleTimeString()}.`;
-    if (/date|today/.test(input))
-      return `Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.`;
-    if (/thank/.test(input))
-      return "You're welcome! Is there anything else I can help you with?";
-    if (/bye|goodbye|see you/.test(input))
-      return "Goodbye! Have a great day. I'll be here whenever you need me.";
-    if (/joke/.test(input))
-      return "Why do programmers prefer dark mode? Because light attracts bugs!";
-    if (/weather/.test(input))
-      return "I don't have live weather access right now, but you can check weather.com for the latest forecast.";
-    return null;
+  // ── Notes ──────────────────────────────────────────────────────────────────
+  function openNotes() {
+    document.getElementById('notes-area').value = notes;
+    document.getElementById('notes-modal').classList.add('open');
   }
+  function closeNotes() {
+    notes = document.getElementById('notes-area').value;
+    localStorage.setItem('jarvis-notes', notes);
+    document.getElementById('notes-modal').classList.remove('open');
+  }
+  function clearNotes() { notes = ''; document.getElementById('notes-area').value = ''; localStorage.setItem('jarvis-notes',''); }
 
-  // ── UI helpers ─────────────────────────────────────────────────────────────
+  // ── UI Helpers ─────────────────────────────────────────────────────────────
   function addMessage(role, text) {
     const log = document.getElementById('chat-log');
     const wrap = document.createElement('div');
     wrap.className = `msg ${role}`;
-    wrap.innerHTML = `
-      <div class="msg-label">${role === 'user' ? 'You' : 'JARVIS'}</div>
-      <div class="msg-bubble">${text}</div>
-    `;
+    wrap.innerHTML = `<div class="msg-label">${role === 'user' ? 'You' : 'JARVIS'}</div><div class="msg-bubble">${text}</div>`;
     log.appendChild(wrap);
     log.scrollTop = log.scrollHeight;
   }
-
   function setStatus(text, cls = '') {
     const el = document.getElementById('status');
-    el.textContent = text;
-    el.className = 'status ' + cls;
+    el.textContent = text; el.className = 'status ' + cls;
   }
-
   function setOrb(state) {
-    const orb = document.getElementById('orb');
-    const icon = document.getElementById('mic-icon');
-    orb.className = 'orb ' + state;
-    icon.textContent = state === 'speaking' ? '🔊' : '🎙️';
+    document.getElementById('orb').className = 'orb ' + state;
+    document.getElementById('mic-icon').textContent = state === 'speaking' ? '🔊' : '🎙️';
   }
-
-  function resetOrb() {
-    setOrb('');
-    setStatus('Click the orb to speak');
-  }
-
-  function clearChat() {
-    document.getElementById('chat-log').innerHTML = '';
-  }
+  function resetOrb() { setOrb(''); setStatus('Click the orb to activate'); }
+  function clearChat() { document.getElementById('chat-log').innerHTML = ''; }
 </script>
 </body>
 </html>
